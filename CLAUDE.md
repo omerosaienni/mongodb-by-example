@@ -32,6 +32,20 @@ single node replica set, Make for infra, npm for per-feature examples.
 - Index tests assert on the explain plan stage, not just query results.
 - Tests that check matching behaviour seed documents that should not match and
   assert they are untouched.
+- Two test tiers. Unit tests have no external dependencies and run with the
+  database down. Integration tests need the Mongo endpoint and are named
+  *.integration.test.ts. A test that touches Mongo must be in the integration
+  tier, never the unit tier.
+- npm run test:unit runs the unit tier, test:integration runs the integration
+  tier. The judge runs unit first, then integration; both must pass.
+
+### Integration endpoints
+- Mongo replica set at mongodb://127.0.0.1:27017 with directConnection=true.
+   - Readiness: a connect succeeds, or docker compose ps shows the mongo service up and healthy.
+   - Bring-up: docker compose up -d (then allow a few seconds for primary election).
+- Integration tests need this endpoint up. They are an attended prerequisite, the
+  loop does not start the database. If it is down the judge raises an environment
+  block and waits for it, it does not fail the deliverable.
 
 ### TypeScript style
 - Strict mode. Supply your own interfaces and pass them as driver generics, e.g.
