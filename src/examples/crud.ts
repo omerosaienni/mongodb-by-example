@@ -30,7 +30,10 @@ export async function findInStock(minStock: number): Promise<Pick<Widget, 'sku' 
 
 // updateOne touches at most one document. Returns matched and modified counts so
 // callers can tell a no-op match from a real change.
-export async function restockOne(sku: string, stock: number): Promise<{ matched: number; modified: number }> {
+export async function restockOne(
+  sku: string,
+  stock: number,
+): Promise<{ matched: number; modified: number }> {
   const col = await widgets();
   const res = await col.updateOne({ sku }, { $set: { stock } });
   return { matched: res.matchedCount, modified: res.modifiedCount };
@@ -51,11 +54,7 @@ export async function recolourAll(
 // returned upsertedId is non-null only when a new document was created.
 export async function upsertBySku(widget: Widget): Promise<{ upserted: boolean }> {
   const col = await widgets();
-  const res = await col.updateOne(
-    { sku: widget.sku },
-    { $set: widget },
-    { upsert: true },
-  );
+  const res = await col.updateOne({ sku: widget.sku }, { $set: widget }, { upsert: true });
   return { upserted: res.upsertedId !== null };
 }
 
@@ -93,8 +92,14 @@ async function demo(): Promise<void> {
   console.log('updateOne W-002 stock=20:', await restockOne('W-002', 20));
   console.log('updateMany red -> green:', await recolourAll('red', 'green'));
 
-  console.log('upsert existing W-001:', await upsertBySku({ sku: 'W-001', name: 'Bolt', colour: 'green', stock: 9 }));
-  console.log('upsert absent W-999:', await upsertBySku({ sku: 'W-999', name: 'Pin', colour: 'black', stock: 1 }));
+  console.log(
+    'upsert existing W-001:',
+    await upsertBySku({ sku: 'W-001', name: 'Bolt', colour: 'green', stock: 9 }),
+  );
+  console.log(
+    'upsert absent W-999:',
+    await upsertBySku({ sku: 'W-999', name: 'Pin', colour: 'black', stock: 1 }),
+  );
 
   console.log('deleteOne W-004:', await deleteOneBySku('W-004'));
   console.log('deleteMany blue:', await deleteManyByColour('blue'));

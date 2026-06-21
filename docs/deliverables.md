@@ -13,6 +13,7 @@ lacks mongot).
 ## Deliverables
 
 ### 1
+
 - title: Scaffold and tooling
 - depends_on: []
 - description: Project skeleton. package.json, tsconfig, vitest config, eslint and
@@ -30,6 +31,7 @@ lacks mongot).
   because there is no feature yet.
 
 ### 2
+
 - title: Docker and replica set bring-up
 - depends_on: [1]
 - description: docker compose for Mongo 8.x with a named volume. An idempotent
@@ -49,6 +51,7 @@ lacks mongot).
   connect.
 
 ### 3
+
 - title: Connection helper and seed
 - depends_on: [2]
 - description: A db helper exposing one shared MongoClient for the process. A seed
@@ -68,6 +71,7 @@ lacks mongot).
   presence and type, not just a non-zero count.
 
 ### 4
+
 - title: CRUD
 - depends_on: [3]
 - description: Example module covering insertOne, insertMany, find with filters
@@ -85,6 +89,7 @@ lacks mongot).
   untouched.
 
 ### 5
+
 - title: Indexes
 - depends_on: [3]
 - description: Example module creating a compound index, a partial index, and a
@@ -102,6 +107,7 @@ lacks mongot).
   query results.
 
 ### 6
+
 - title: Aggregation pipeline
 - depends_on: [3]
 - description: Example module covering match, group, sort, project, lookup,
@@ -118,6 +124,7 @@ lacks mongot).
   concrete numbers a wrong pipeline would not produce, not just on result length.
 
 ### 7
+
 - title: Schema validation
 - depends_on: [3]
 - description: Example module applying a collection validator with jsonSchema,
@@ -134,6 +141,7 @@ lacks mongot).
   silently succeeds.
 
 ### 8
+
 - title: Text search
 - depends_on: [3]
 - description: Example module creating a text index and running text queries with
@@ -149,6 +157,7 @@ lacks mongot).
   the test fails if the query returns everything or ignores relevance.
 
 ### 9
+
 - title: Geospatial
 - depends_on: [3]
 - description: Example module creating a 2dsphere index and running near and within
@@ -165,6 +174,7 @@ lacks mongot).
   are empty.
 
 ### 10
+
 - title: Transactions
 - depends_on: [3]
 - description: Example module performing a multi-document transaction (a transfer
@@ -180,6 +190,7 @@ lacks mongot).
   in a session.
 
 ### 11
+
 - title: Change streams
 - depends_on: [3]
 - description: Headless example module opening a change stream, performing writes,
@@ -197,6 +208,7 @@ lacks mongot).
   earlier ones.
 
 ### 12
+
 - title: Time series collections
 - depends_on: [3]
 - description: Example module creating a time series collection, inserting
@@ -213,6 +225,7 @@ lacks mongot).
   created as an ordinary collection.
 
 ### 13
+
 - title: GridFS
 - depends_on: [3]
 - description: Example module uploading a file to GridFS and downloading it back.
@@ -226,6 +239,7 @@ lacks mongot).
   corrupted, so the test compares a content hash, not just file length.
 
 ### 14
+
 - title: Oplog peek
 - depends_on: [3]
 - description: Example module performing a relative update then reading the oplog
@@ -243,6 +257,7 @@ lacks mongot).
   carrying the result value.
 
 ### 15
+
 - title: RBAC
 - depends_on: [3]
 - description: Example module demonstrating createUser, role grants, and
@@ -260,6 +275,7 @@ lacks mongot).
   is recorded, not that an unauthorised action is blocked, since auth is open.
 
 ### 16
+
 - title: SSE server
 - depends_on: [11]
 - description: A Node server holding a change stream and exposing the events on an
@@ -276,6 +292,7 @@ lacks mongot).
   than asserting only that the endpoint returns 200.
 
 ### 17
+
 - title: React dashboard
 - depends_on: [16]
 - description: A Vite React app using EventSource to consume the SSE endpoint and
@@ -292,6 +309,7 @@ lacks mongot).
   derived rows, failing if parsing is wrong.
 
 ### 18
+
 - title: README finalisation
 - depends_on: [4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 17]
 - description: Complete the README. The run-everything story, the Make and npm and

@@ -9,9 +9,9 @@ services:
     container_name: mongo-db-1
     # --replSet is mandatory: the harness models a single node replica set so
     # change streams and transactions work. bind_ip_all lets the host reach it.
-    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    command: ['mongod', '--replSet', 'rs0', '--bind_ip_all']
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - data:/data/db
 

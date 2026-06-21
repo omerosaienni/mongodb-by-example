@@ -28,19 +28,13 @@ afterAll(async () => {
 });
 
 describe('replica set smoke test', () => {
-  it(
-    'reports a PRIMARY member',
-    async () => {
-      await client.connect();
-      const status = (await client
-        .db('admin')
-        .command({ replSetGetStatus: 1 })) as ReplSetStatus;
+  it('reports a PRIMARY member', async () => {
+    await client.connect();
+    const status = (await client.db('admin').command({ replSetGetStatus: 1 })) as ReplSetStatus;
 
-      expect(status.set).toBe('rs0');
+    expect(status.set).toBe('rs0');
 
-      const states = status.members.map((m) => m.stateStr);
-      expect(states).toContain('PRIMARY');
-    },
-    15000,
-  );
+    const states = status.members.map((m) => m.stateStr);
+    expect(states).toContain('PRIMARY');
+  }, 15000);
 });
