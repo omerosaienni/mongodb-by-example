@@ -38,3 +38,22 @@ any sampled document are stable for tests, then drops each collection before
 inserting so re-running is idempotent and leaves exactly `SEED_COUNTS`
 (users 25, places 15, posts 40). It returns the counts and leaves the client open,
 the caller owns the lifecycle. Run it with `npm run seed` or `make seed`.
+
+## Example modules
+
+Each feature lives in one file under [`src/examples`](../src/examples), runnable on
+its own via an `ex:<feature>` npm script and printing its results. Modules import
+the shared client from [`src/db.ts`](../src/db.ts) and collection names from
+[`src/collections.ts`](../src/collections.ts), they never connect per query or
+hardcode a name. A module that mutates data works in its own scratch collection so
+it never corrupts the seed the other modules read.
+
+### CRUD
+
+The core create, read, update and delete operations. See the module doc:
+[4-crud](./modules/4-crud.md). [`src/examples/crud.ts`](../src/examples/crud.ts)
+covers insertOne, insertMany, find with a filter and a projection, updateOne,
+updateMany, upsert, deleteOne and deleteMany against a dedicated `widgets`
+collection, run with `npm run ex:crud`. Because it deletes and mutates, it uses
+its own scratch collection rather than the seeded `users`, `places` and `posts`,
+its tests drop that collection before each case so they are order independent.

@@ -4,6 +4,10 @@ export const COLLECTIONS = {
   users: 'users',
   places: 'places',
   posts: 'posts',
+  // Dedicated scratch space for CRUD examples and tests. They insert, update and
+  // delete freely here so the seeded collections other deliverables assert on
+  // stay untouched.
+  widgets: 'widgets',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -37,4 +41,13 @@ export interface Post {
   body: string;
   tags: string[];
   authorEmail: string;
+}
+
+// The scratch document shape for CRUD examples. sku is the natural key the
+// upsert filters on and stock is the field updates mutate.
+export interface Widget {
+  sku: string;
+  name: string;
+  colour: string;
+  stock: number;
 }
