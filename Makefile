@@ -1,7 +1,7 @@
 # help is the default goal so a bare `make` documents the harness
 .DEFAULT_GOAL := help
 
-.PHONY: help up rs-init seed down nuke bootstrap
+.PHONY: help up rs-init seed down nuke bootstrap test test-unit test-integration
 
 help: ## List available targets
 	@echo "Mongo playground - available targets:"
@@ -13,6 +13,9 @@ help: ## List available targets
 	@echo "  down        Stop the container, keep data"
 	@echo "  nuke        Stop the container and delete the named volume"
 	@echo "  bootstrap   up + rs-init in one go"
+	@echo "  test-unit   Run the unit tier (no database needed)"
+	@echo "  test-integration  Run the integration tier (needs Mongo up)"
+	@echo "  test        Run unit then integration, in that order"
 
 up: ## Start MongoDB in Docker
 	docker compose up -d
@@ -48,3 +51,12 @@ nuke: ## Stop the container and delete the named volume
 	@echo "container and volume removed"
 
 bootstrap: up rs-init ## up + rs-init, no manual steps
+
+test-unit: ## Run the unit tier (no database needed)
+	npm run test:unit
+
+test-integration: ## Run the integration tier (needs Mongo up)
+	npm run test:integration
+
+# unit before integration so a logic break fails fast without needing the database
+test: test-unit test-integration ## Run unit then integration, in that order
