@@ -4,7 +4,7 @@
 .PHONY: help up rs-init seed down nuke bootstrap test test-unit test-integration graph graph-viz
 
 help: ## List available targets
-	@echo "Mongo playground - available targets:"
+	@echo "mongo-db-1 - available targets:"
 	@echo ""
 	@echo "  help        Show this list"
 	@echo "  up          Start MongoDB in Docker"
@@ -46,8 +46,8 @@ down: ## Stop the container, keep data
 nuke: ## Stop the container and delete the named volume
 	docker compose down -v
 	@# confirm the volume is actually gone: a deterministic name lets us assert it
-	@if docker volume ls --format '{{.Name}}' | grep -qx mongo-playground-data; then \
-		echo "volume mongo-playground-data still present" >&2; \
+	@if docker volume ls --format '{{.Name}}' | grep -qx mongo-db-1-data; then \
+		echo "volume mongo-db-1-data still present" >&2; \
 		exit 1; \
 	fi
 	@echo "container and volume removed"

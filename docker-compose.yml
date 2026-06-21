@@ -1,12 +1,12 @@
 # name pins the compose project so the container and volume names are stable
 # regardless of the working directory (a git worktree is named after a number,
 # which would otherwise leak into the volume name and break `make nuke`).
-name: mongo-playground
+name: mongo-db-1
 
 services:
   mongo:
     image: mongo:8.0
-    container_name: mongo-playground
+    container_name: mongo-db-1
     # --replSet is mandatory: the harness models a single node replica set so
     # change streams and transactions work. bind_ip_all lets the host reach it.
     command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
@@ -18,4 +18,4 @@ services:
 volumes:
   # fixed name so `make nuke` can verify the volume is gone deterministically
   data:
-    name: mongo-playground-data
+    name: mongo-db-1-data
