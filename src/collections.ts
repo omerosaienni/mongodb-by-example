@@ -12,6 +12,13 @@ export const COLLECTIONS = {
   // its own deterministic documents and indexes, so it stays independent of the
   // seeded collections and of the widgets CRUD scratch space.
   metrics: 'metrics',
+  // Scratch space for the aggregation examples. Orders carry the numeric and
+  // array fields the pipelines group, bucket and unwind. Kept separate from the
+  // other scratch collections so each module owns its own deterministic state.
+  orders: 'orders',
+  // The lookup target for the aggregation examples. Orders join to customers by
+  // customerId, so $lookup has a second related collection to draw fields from.
+  customers: 'customers',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -64,4 +71,24 @@ export interface Metric {
   score: number;
   active: boolean;
   expireAt: Date;
+}
+
+// An order for the aggregation examples. customerId joins to a Customer for
+// $lookup, status keys the $group, amount feeds $group totals and $bucket
+// boundaries, and tags is the array $unwind expands.
+export interface Order {
+  orderId: string;
+  customerId: string;
+  status: 'paid' | 'pending' | 'cancelled';
+  amount: number;
+  tags: string[];
+}
+
+// The $lookup target for the aggregation examples. customerId is the join key
+// orders reference, region gives a second field to confirm the joined document
+// carries the expected related values.
+export interface Customer {
+  customerId: string;
+  name: string;
+  region: string;
 }

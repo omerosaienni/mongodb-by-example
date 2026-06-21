@@ -3,6 +3,73 @@
 How the Mongo playground is wired together. Per-deliverable detail lives under
 [docs/modules](./modules); this file is the cross-cutting view.
 
+## Dependency graph
+
+The deliverable build order, derived from the `depends_on` field of each
+deliverable in [docs/deliverables.md](./deliverables.md). Roots with no
+dependencies are one colour, dependents another.
+
+<!-- depgraph -->
+
+```mermaid
+graph TD
+  classDef root fill:#cde4ff,stroke:#3b6fb0,color:#0b2545
+  classDef dep fill:#ffe8cc,stroke:#c77f2a,color:#4a2c08
+
+  1[1 Scaffold and tooling]
+  2[2 Docker and replica set]
+  3[3 Connection helper and seed]
+  4[4 CRUD]
+  5[5 Indexes]
+  6[6 Aggregation pipeline]
+  7[7 Schema validation]
+  8[8 Text search]
+  9[9 Geospatial]
+  10[10 Transactions]
+  11[11 Change streams]
+  12[12 Time series]
+  13[13 GridFS]
+  14[14 Oplog peek]
+  15[15 RBAC]
+  16[16 SSE server]
+  17[17 React dashboard]
+  18[18 README finalisation]
+
+  1 --> 2
+  2 --> 3
+  3 --> 4
+  3 --> 5
+  3 --> 6
+  3 --> 7
+  3 --> 8
+  3 --> 9
+  3 --> 10
+  3 --> 11
+  3 --> 12
+  3 --> 13
+  3 --> 14
+  3 --> 15
+  11 --> 16
+  16 --> 17
+  4 --> 18
+  5 --> 18
+  6 --> 18
+  7 --> 18
+  8 --> 18
+  9 --> 18
+  10 --> 18
+  12 --> 18
+  13 --> 18
+  14 --> 18
+  15 --> 18
+  17 --> 18
+
+  class 1 root
+  class 2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 dep
+```
+
+<!-- /depgraph -->
+
 ## Connection and seed layer
 
 The single point of database access and the deterministic data the rest of the
@@ -70,3 +137,25 @@ and a COLLSCAN is absent, so the test fails if an index is dropped or ignored. T
 partial index is proven by hinting it and showing the documents outside its filter
 are absent, and the TTL index is asserted by its recorded `expireAfterSeconds`
 rather than by waiting for the background monitor to delete.
+
+<!-- 6 -->
+
+## Aggregation pipeline
+
+The core aggregation stages over two related collections. See the module doc:
+[6-aggregation](./modules/6-aggregation.md).
+[`src/examples/aggregation.ts`](../src/examples/aggregation.ts) exercises $match,
+$group, $sort, $project, $lookup, $unwind, $facet and $bucket against dedicated
+`orders` and `customers` scratch collections, run with `npm run ex:aggregation`.
+The collections carry hand-authored deterministic data rather than the faker seed,
+because the acceptance criteria demand concrete numbers a wrong pipeline would not
+produce, so every total, count and bucket is computable by hand. $lookup needs a
+second related collection, hence two: orders join to customers by `customerId`, and
+the joined region is projected flat to confirm the related fields arrived.
+
+The seed is shaped so the assertions gate the pipeline, not just the result length.
+The cancelled order carries the largest amount and one customer owns no orders, so a
+broken pre-group $match or an over-eager $group changes the asserted numbers. Every
+helper needs live Mongo, so the module is integration tier only.
+
+<!-- /6 -->
