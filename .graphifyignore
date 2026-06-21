@@ -11,6 +11,5 @@ package.json
 package-lock.json
 .prettierrc.json
 eslint.config.js
-vitest.config.ts
 vitest.unit.config.ts
 vitest.integration.config.ts
