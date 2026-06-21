@@ -23,6 +23,10 @@ export const COLLECTIONS = {
   // a $jsonSchema validator each run, so it owns its own state and never touches
   // the seeded collections.
   members: 'members',
+  // Scratch space for the text-search example. Holds a fixed, hand-written corpus
+  // rather than the seeded posts, whose faker text is random, so the tests can
+  // name exactly which documents contain a term and in what relevance order.
+  articles: 'articles',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -95,6 +99,14 @@ export interface Customer {
   customerId: string;
   name: string;
   region: string;
+}
+
+// The scratch document shape for the text-search example. title and body are the
+// two text-indexed fields the $text query searches, and the deterministic corpus
+// repeats the search term a known number of times so relevance ordering is fixed.
+export interface Article {
+  title: string;
+  body: string;
 }
 
 // The validated document shape for the schema validation example. The $jsonSchema

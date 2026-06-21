@@ -182,3 +182,27 @@ driver version does not populate `codeName` on the validation error. Every helpe
 needs live Mongo, so the module is integration tier only.
 
 <!-- /7 -->
+
+<!-- 8 -->
+
+## Text search
+
+A text index and a `$text` query that ranks matches by relevance. See the module
+doc: [8-text-search](./modules/8-text-search.md).
+[`src/examples/text.ts`](../src/examples/text.ts) builds a single text index over
+`title` and `body` on a dedicated `articles` scratch collection, then runs a search
+that projects the textScore meta and sorts by it descending, run with
+`npm run ex:text`. A collection may carry at most one text index, so the one index
+spans both fields, and it is stored as `weights` ({ title: 1, body: 1 }) rather than
+literal `'text'` keys, which is what the index test asserts on.
+
+The corpus is hand-authored and deterministic rather than the faker seed, because
+the test must know which documents match and in what order. One document repeats the
+term so it outscores a single mention, and two never mention it so a $text match must
+exclude them. The relevance score lives only in the `{ $meta: 'textScore' }`
+projection, so it is projected to be sortable and returned, and the gate is the
+ordering: a broken sort ranks the wrong document first. Every query needs live Mongo,
+so the module is integration tier only, with the pure `isDescending` predicate
+covered in the unit tier.
+
+<!-- /8 -->
