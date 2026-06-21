@@ -9,10 +9,12 @@
 # cannot disagree on what they test, only on how much they print.
 #
 # Usage:
-#   agent-tests.sh unit            run the unit tier, terse on pass
-#   agent-tests.sh integration     run the integration tier, terse on pass
-#   agent-tests.sh both            unit then integration, stops if unit fails
-#   agent-tests.sh <tier> --verbose   full vitest output regardless of outcome
+#   agent-tests.sh unit                  run the unit tier, terse on pass
+#   agent-tests.sh integration           run the integration tier, terse on pass
+#   agent-tests.sh both                  unit then integration, stops if unit fails
+#   agent-tests.sh <tier> <path>...      scope to specific test files, intersected
+#                                        with the tier glob (the scoped negative run)
+#   agent-tests.sh <tier> [path]... --verbose   full vitest output regardless
 #
 # Exit: 0 all selected tiers passed, 1 a tier ran and failed, 2 a tier selected
 #       zero tests (hollow suite), 3 a tier could not run (environment problem)
@@ -26,20 +28,23 @@ integration_config="vitest.integration.config.ts"
 
 verbose=0
 tier=""
+scope=()
 for a in "$@"; do
     case "$a" in
         unit|integration|both) tier="$a" ;;
         -v|--verbose)          verbose=1 ;;
         -h|--help) grep '^#' "$0" | grep -v '^#!' | sed 's/^# \{0,1\}//'; exit 0 ;;
-        *) echo "unknown argument: $a" >&2; exit 64 ;;
+        -*) echo "unknown option: $a" >&2; exit 64 ;;
+        *) scope+=("$a") ;;
     esac
 done
-[ -z "$tier" ] && { echo "usage: agent-tests.sh unit|integration|both [--verbose]" >&2; exit 64; }
+[ -z "$tier" ] && { echo "usage: agent-tests.sh unit|integration|both [path]... [--verbose]" >&2; exit 64; }
+[ "$tier" = both ] && [ "${#scope[@]}" -gt 0 ] && { echo "scope paths cannot be combined with 'both'; run one tier" >&2; exit 64; }
 
 # run_one <label> <config>: run one tier through vitest, emit terse or full.
 run_one() {
     local label="$1" config="$2" out rc summary
-    out="$(npx vitest run -c "$config" 2>&1)"; rc=$?
+    out="$(npx vitest run -c "$config" "${scope[@]}" 2>&1)"; rc=$?
 
     # vitest emits ANSI colour codes even when its output is captured (not a tty),
     # and those codes sit between words in the summary line, so strip them before

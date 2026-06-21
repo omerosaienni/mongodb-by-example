@@ -19,6 +19,10 @@ export const COLLECTIONS = {
   // The lookup target for the aggregation examples. Orders join to customers by
   // customerId, so $lookup has a second related collection to draw fields from.
   customers: 'customers',
+  // Scratch space for the schema validation example. The module recreates it with
+  // a $jsonSchema validator each run, so it owns its own state and never touches
+  // the seeded collections.
+  members: 'members',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -91,4 +95,15 @@ export interface Customer {
   customerId: string;
   name: string;
   region: string;
+}
+
+// The validated document shape for the schema validation example. The $jsonSchema
+// validator enforces these at the server: name and email are required strings,
+// email must match a pattern, and age must be a number at or above a minimum. age
+// is a plain number not an int, because the driver serialises JS numbers as BSON
+// double, which a strict bsonType 'int' validator would reject.
+export interface Member {
+  name: string;
+  email: string;
+  age: number;
 }

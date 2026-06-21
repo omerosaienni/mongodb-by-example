@@ -159,3 +159,26 @@ broken pre-group $match or an over-eager $group changes the asserted numbers. Ev
 helper needs live Mongo, so the module is integration tier only.
 
 <!-- /6 -->
+
+<!-- 7 -->
+
+## Schema validation
+
+A collection `$jsonSchema` validator with `validationLevel: 'strict'` and
+`validationAction: 'error'`. See the module doc:
+[7-validation](./modules/7-validation.md).
+[`src/examples/validation.ts`](../src/examples/validation.ts) recreates a `members`
+scratch collection carrying the validator, then inserts one conforming member and one
+crafted to violate the schema, run with `npm run ex:validation`. The rule lives on
+the collection, not in application code, so the rejection is a MongoServerError from
+the write itself, raised with code 121 (`DocumentValidationFailure`).
+
+Two key decisions shape the validator. `age` is `bsonType: 'number'` rather than
+`int`, because the Node driver serialises a plain JS number as BSON double, so a
+strict `int` validator would reject a conforming age while a `minimum` constraint
+still gates out-of-range values. The reject test asserts on `code === 121` and
+`errInfo.details.operatorName === '$jsonSchema'` rather than `codeName`, because this
+driver version does not populate `codeName` on the validation error. Every helper
+needs live Mongo, so the module is integration tier only.
+
+<!-- /7 -->
