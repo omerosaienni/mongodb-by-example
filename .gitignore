@@ -1,7 +1,6 @@
 node_modules/
 dist/
-.build-loop/
 .claude/
 
 coverage/
-.build-loop.parallel-old/
+.building/

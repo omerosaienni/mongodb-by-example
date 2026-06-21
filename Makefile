@@ -9,7 +9,7 @@ help: ## List available targets
 	@echo "  help        Show this list"
 	@echo "  up          Start MongoDB in Docker"
 	@echo "  rs-init     Initialise the single node replica set (idempotent)"
-	@echo "  seed        Generate and load faker seed data (not yet implemented)"
+	@echo "  seed        Generate and load faker seed data"
 	@echo "  down        Stop the container, keep data"
 	@echo "  nuke        Stop the container and delete the named volume"
 	@echo "  bootstrap   up + rs-init in one go"
@@ -36,7 +36,7 @@ rs-init: ## Initialise the single node replica set (idempotent)
 	./scripts/rs-init.sh
 
 seed: ## Generate and load faker seed data
-	@echo "seed: not yet implemented"
+	npm run seed
 
 down: ## Stop the container, keep data
 	docker compose down
