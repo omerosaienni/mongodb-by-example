@@ -15,7 +15,7 @@ harness builds on. See the module doc:
 module-level variable and handed out by `getClient()`. Construction is lazy, the
 driver touches no network until `connect()`, so the getter is unit testable for
 reuse with the database down. `getDb()` connects that one client and returns a
-typed `Db` on `DB_NAME` (`playground`); `closeClient()` closes and clears it so a
+typed `Db` on `DB_NAME` (`mongodb1`); `closeClient()` closes and clears it so a
 later `getClient()` rebuilds and the process can exit. Every module imports these,
 none constructs its own client or connects per query. The URI carries
 `directConnection=true` because a single node replica set advertises its internal
