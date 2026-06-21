@@ -57,3 +57,16 @@ updateMany, upsert, deleteOne and deleteMany against a dedicated `widgets`
 collection, run with `npm run ex:crud`. Because it deletes and mutates, it uses
 its own scratch collection rather than the seeded `users`, `places` and `posts`,
 its tests drop that collection before each case so they are order independent.
+
+### Indexes
+
+Compound, partial and TTL indexes, with explain proving the planner uses them. See
+the module doc: [5-indexes](./modules/5-indexes.md).
+[`src/examples/indexes.ts`](../src/examples/indexes.ts) builds the three indexes on
+a dedicated `metrics` scratch collection and exposes helpers that explain a query
+and walk the winning plan, run with `npm run ex:indexes`. The real gate is the
+explain stage: a recursive walk of the winning plan asserts an IXSCAN is present
+and a COLLSCAN is absent, so the test fails if an index is dropped or ignored. The
+partial index is proven by hinting it and showing the documents outside its filter
+are absent, and the TTL index is asserted by its recorded `expireAfterSeconds`
+rather than by waiting for the background monitor to delete.

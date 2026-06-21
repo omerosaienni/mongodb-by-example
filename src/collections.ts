@@ -8,6 +8,10 @@ export const COLLECTIONS = {
   // delete freely here so the seeded collections other deliverables assert on
   // stay untouched.
   widgets: 'widgets',
+  // Scratch space for the index examples. The module drops and rebuilds it with
+  // its own deterministic documents and indexes, so it stays independent of the
+  // seeded collections and of the widgets CRUD scratch space.
+  metrics: 'metrics',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -50,4 +54,14 @@ export interface Widget {
   name: string;
   colour: string;
   stock: number;
+}
+
+// The scratch document shape for the index examples. category and score back the
+// compound index, active backs the partial index, and expireAt backs the TTL
+// index.
+export interface Metric {
+  category: string;
+  score: number;
+  active: boolean;
+  expireAt: Date;
 }

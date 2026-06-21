@@ -7,6 +7,7 @@
   "scripts": {
     "seed": "tsx src/seed.ts",
     "ex:crud": "tsx src/examples/crud.ts",
+    "ex:indexes": "tsx src/examples/indexes.ts",
     "test:unit": "vitest run -c vitest.unit.config.ts",
     "test:integration": "vitest run -c vitest.integration.config.ts"
   },
