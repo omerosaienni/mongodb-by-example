@@ -1,7 +1,7 @@
 # help is the default goal so a bare `make` documents the harness
 .DEFAULT_GOAL := help
 
-.PHONY: help up rs-init seed down nuke bootstrap test test-unit test-integration
+.PHONY: help up rs-init seed down nuke bootstrap test test-unit test-integration graph graph-viz
 
 help: ## List available targets
 	@echo "Mongo playground - available targets:"
@@ -16,6 +16,8 @@ help: ## List available targets
 	@echo "  test-unit   Run the unit tier (no database needed)"
 	@echo "  test-integration  Run the integration tier (needs Mongo up)"
 	@echo "  test        Run unit then integration, in that order"
+	@echo "  graph       Rebuild the knowledge graph (code + docs) and HTML"
+	@echo "  graph-viz   Regenerate graph.html and report from the existing graph"
 
 up: ## Start MongoDB in Docker
 	docker compose up -d
@@ -60,3 +62,14 @@ test-integration: ## Run the integration tier (needs Mongo up)
 
 # unit before integration so a logic break fails fast without needing the database
 test: test-unit test-integration ## Run unit then integration, in that order
+
+# Knowledge graph (graphify). Model/env pinned so the target is self-contained.
+# Code is auto-refreshed by the post-commit hook (AST, no LLM); this target is
+# for refreshing docs (needs the LLM) and rebuilding the HTML view.
+GRAPHIFY_ENV := OLLAMA_MODEL=graphify OLLAMA_API_KEY=x
+
+graph: ## Rebuild the knowledge graph: code (AST) + docs (LLM) + HTML
+	$(GRAPHIFY_ENV) graphify . --backend ollama --token-budget 8000 --max-concurrency 1
+
+graph-viz: ## Regenerate graph.html and the report from the existing graph
+	$(GRAPHIFY_ENV) graphify cluster-only . --backend ollama

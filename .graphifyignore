@@ -1,0 +1,16 @@
+# loop + build output
+.building/
+graphify-out/
+node_modules/
+dist/
+coverage/
+
+# config files: not architecture, just noise in the graph
+tsconfig.json
+package.json
+package-lock.json
+.prettierrc.json
+eslint.config.js
+vitest.config.ts
+vitest.unit.config.ts
+vitest.integration.config.ts
