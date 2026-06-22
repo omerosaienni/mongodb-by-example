@@ -259,3 +259,28 @@ declares no default database. The transfer needs live Mongo, so the behavioural
 tests are integration tier only, with the seed-shape assertions in the unit tier.
 
 <!-- /10 -->
+
+<!-- 11 -->
+
+## Change streams
+
+A change stream watched over a scratch collection, observing CRUD events and
+resuming a closed stream from a stored token. See the module doc:
+[11-change-streams](./modules/11-change-streams.md).
+[`src/examples/change-streams.ts`](../src/examples/change-streams.ts) opens a
+watch on a dedicated `events` scratch collection, inserts, updates and deletes one
+fixed document and reads back the `operationType` of each event in order, run with
+`npm run ex:change-streams`. The lazy server side cursor is forced open via
+`tryNext()` before any write, because `watch()` only pins its start time on the
+first server round trip and writes issued earlier would fall outside the window
+and block `.next()` forever.
+
+A second path captures the per-event resume token from the event `_id`, performs a
+further write while no stream is open, then reopens with `resumeAfter` so the
+post-token write is recovered and the captured event is not redelivered;
+`fullDocument: 'updateLookup'` is requested only where a changed field is
+asserted, since an update event otherwise carries only the change description. The
+watch needs a live replica set, so the module is integration tier only, with the
+fixture-shape assertions in the unit tier.
+
+<!-- /11 -->

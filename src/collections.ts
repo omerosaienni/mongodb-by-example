@@ -36,6 +36,11 @@ export const COLLECTIONS = {
   // a conserved total a wrong implementation would not produce. Owned by the
   // module, which recreates it each run.
   accounts: 'accounts',
+  // Scratch space for the change-streams example. The module opens a watch on it
+  // then issues its own insert, update and delete so the observed events are
+  // entirely its own, never another deliverable's writes leaking in. Recreated
+  // each run so a stale doc cannot pre-trigger an event before the watch is open.
+  events: 'events',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -134,6 +139,16 @@ export interface Landmark {
 export interface Account {
   accountId: string;
   balance: number;
+}
+
+// The scratch document shape for the change-streams example. key is a stable
+// natural identifier the module targets with its update and delete, and label is
+// a mutable field so an update event carries a distinguishing changed value the
+// tests assert on. The fixed seed keys let the resume test name exactly which
+// post-token write the reopened stream must deliver.
+export interface EventDoc {
+  key: string;
+  label: string;
 }
 
 // The validated document shape for the schema validation example. The $jsonSchema
