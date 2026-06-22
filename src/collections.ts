@@ -41,6 +41,13 @@ export const COLLECTIONS = {
   // entirely its own, never another deliverable's writes leaking in. Recreated
   // each run so a stale doc cannot pre-trigger an event before the watch is open.
   events: 'events',
+  // Scratch space for the time series example. Created as a time series collection
+  // (not an ordinary one) keyed on a fixed set of timestamped readings, so the
+  // metadata assertion proves the timeseries option took and the window query has
+  // known in-range and out-of-range documents to include and exclude. Recreated
+  // each run, which for a time series collection means dropping and recreating with
+  // the timeseries options since the option cannot be added to an existing one.
+  readings: 'readings',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -160,4 +167,15 @@ export interface Member {
   name: string;
   email: string;
   age: number;
+}
+
+// The measurement shape for the time series example. timestamp is the timeField
+// the collection is keyed on and the window query ranges over, sensorId is the
+// metaField grouping readings from the same source, and value is the measured
+// quantity. timestamp is a Date because a time series timeField must be a BSON
+// date, the server rejects an insert whose timeField is any other type.
+export interface Reading {
+  timestamp: Date;
+  sensorId: string;
+  value: number;
 }

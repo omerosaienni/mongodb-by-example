@@ -284,3 +284,31 @@ watch needs a live replica set, so the module is integration tier only, with the
 fixture-shape assertions in the unit tier.
 
 <!-- /11 -->
+
+<!-- 12 -->
+
+## Time series
+
+A time series collection with a half-open time-window query. See the module doc:
+[12-time-series](./modules/12-time-series.md).
+[`src/examples/timeseries.ts`](../src/examples/timeseries.ts) creates a dedicated
+`readings` scratch collection via `createCollection` with a `timeseries` option
+(`timeField: 'timestamp'`, `metaField: 'sensorId'`, `granularity: 'minutes'`),
+inserts six fixed-timestamp readings and runs a `[start, end)` query that returns
+only the readings inside the window, run with `npm run ex:timeseries`.
+`resetAndSeed` drops then recreates because the timeseries option cannot be added
+to an existing collection, so a re-run on the existing name would otherwise error.
+The timeField is a BSON `Date` because the server rejects an insert whose timeField
+is any other type.
+
+The six readings straddle the window: two fall before start, three fall inside and
+one falls exactly on `end`. The query uses `$gte start, $lt end`, so the on-end
+reading (value 15) is excluded by the exclusive upper bound, making the half-open
+boundary observable: an inclusive `$lte` would leak it in and break the exact
+expected-values assertion `[12, 13, 14]`. All readings share one `sensorId`, so the
+window is the only thing that selects between them. Metadata is read back from
+`listCollections` options, returning undefined for an ordinary collection so the
+metadata test fails if it were created plain. Both queries need live Mongo, so the
+module is integration tier only.
+
+<!-- /12 -->
