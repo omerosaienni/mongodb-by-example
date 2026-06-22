@@ -1,25 +1,23 @@
 # help is the default goal so a bare `make` documents the harness
 .DEFAULT_GOAL := help
 
-.PHONY: help up rs-init seed down nuke bootstrap test test-unit test-integration graph graph-viz
+.PHONY: help up seed down drop test test-unit test-integration graph graph-viz
 
 help: ## List available targets
 	@echo "mongo-db-1 - available targets:"
 	@echo ""
 	@echo "  help        Show this list"
-	@echo "  up          Start MongoDB in Docker"
-	@echo "  rs-init     Initialise the single node replica set (idempotent)"
+	@echo "  up          Start the shared mongod (idempotent) and ensure the replica set"
 	@echo "  seed        Generate and load faker seed data"
-	@echo "  down        Stop the container, keep data"
-	@echo "  nuke        Stop the container and delete the named volume"
-	@echo "  bootstrap   up + rs-init in one go"
+	@echo "  down        Stop the shared container, keep data"
+	@echo "  drop        Drop this project's database (mongo-db-1) only"
 	@echo "  test-unit   Run the unit tier (no database needed)"
 	@echo "  test-integration  Run the integration tier (needs Mongo up)"
 	@echo "  test        Run unit then integration, in that order"
 	@echo "  graph       Rebuild the knowledge graph (code + docs) and HTML"
 	@echo "  graph-viz   Regenerate graph.html and report from the existing graph"
 
-up: ## Start MongoDB in Docker
+up: ## Start the shared mongod (idempotent) and ensure the replica set
 	docker compose up -d
 	@echo "waiting for mongod to accept connections..."
 	@# poll the server rather than a fixed sleep: the image runs initdb on first
@@ -33,26 +31,23 @@ up: ## Start MongoDB in Docker
 	done; \
 	echo "mongod did not become ready" >&2; \
 	exit 1
-
-rs-init: ## Initialise the single node replica set (idempotent)
+	@# the poll above exits 0 on its own shell once ready, so make reaches this
+	@# line only when mongod answers; rs.initiate is idempotent (no-op if already up)
 	./scripts/rs-init.sh
 
 seed: ## Generate and load faker seed data
 	npm run seed
 
-down: ## Stop the container, keep data
+# stops the shared mongod for every project, not just this one: the blast radius
+# is the whole shared server, so this is not a per-project teardown
+down: ## Stop the shared container, keep data
 	docker compose down
 
-nuke: ## Stop the container and delete the named volume
-	docker compose down -v
-	@# confirm the volume is actually gone: a deterministic name lets us assert it
-	@if docker volume ls --format '{{.Name}}' | grep -qx mongo-db-1-data; then \
-		echo "volume mongo-db-1-data still present" >&2; \
-		exit 1; \
-	fi
-	@echo "container and volume removed"
-
-bootstrap: up rs-init ## up + rs-init, no manual steps
+# drops only THIS project's database; the shared server and every other
+# project's database are untouched. in-container mongosh so no host mongosh needed
+drop: ## Drop this project's database (mongo-db-1) only
+	docker compose exec -T mongo mongosh --quiet --eval 'db.getSiblingDB("mongo-db-1").dropDatabase()'
+	@echo "database mongo-db-1 dropped"
 
 test-unit: ## Run the unit tier (no database needed)
 	npm run test:unit

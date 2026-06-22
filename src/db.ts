@@ -6,7 +6,7 @@ import { MongoClient, type Db } from 'mongodb';
 const URI = 'mongodb://127.0.0.1:27017/?directConnection=true';
 
 // Database the whole harness uses. One place so examples and seed agree.
-export const DB_NAME = 'mongodb1';
+export const DB_NAME = 'mongo-db-1';
 
 // One shared MongoClient per process. MongoClient construction is lazy in the
 // driver: it does not touch the network until connect(), so building the

@@ -20,8 +20,8 @@ single node replica set, Make for infra, npm for per-feature examples.
 - Shared code in src/. Example modules in src/examples/, one file per feature.
 - Each example module is independently runnable via an npm script named ex:<feature>
   and prints its results when run.
-- Infra scripts in scripts/. Make targets orchestrate infra (up, rs-init, seed,
-  down, nuke, bootstrap). npm scripts run examples and tests.
+- Infra scripts in scripts/. Make targets orchestrate infra (up, seed, down,
+  drop). npm scripts run examples and tests.
 
 ### Data
 
@@ -46,8 +46,10 @@ single node replica set, Make for infra, npm for per-feature examples.
 ### Integration endpoints
 
 - Mongo replica set at mongodb://127.0.0.1:27017 with directConnection=true.
+  - This project lives in database mongo-db-1 inside the shared shared-mongo
+    container, one shared mongod that every project reuses as its own database.
   - Readiness: a connect succeeds, or docker compose ps shows the mongo service up and healthy.
-  - Bring-up: docker compose up -d (then allow a few seconds for primary election).
+  - Bring-up: make up (creates shared-mongo if absent, then ensures the replica set).
 - Integration tests need this endpoint up. They are an attended prerequisite, the
   loop does not start the database. If it is down the judge raises an environment
   block and waits for it, it does not fail the deliverable.
