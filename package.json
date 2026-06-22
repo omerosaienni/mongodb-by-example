@@ -10,6 +10,7 @@
     "ex:change-streams": "tsx src/examples/change-streams.ts",
     "ex:crud": "tsx src/examples/crud.ts",
     "ex:geo": "tsx src/examples/geo.ts",
+    "ex:gridfs": "tsx src/examples/gridfs.ts",
     "ex:indexes": "tsx src/examples/indexes.ts",
     "ex:text": "tsx src/examples/text.ts",
     "ex:timeseries": "tsx src/examples/timeseries.ts",

@@ -312,3 +312,28 @@ metadata test fails if it were created plain. Both queries need live Mongo, so t
 module is integration tier only.
 
 <!-- /12 -->
+
+<!-- 13 -->
+
+## GridFS
+
+A file uploaded to a GridFS bucket and downloaded back, proven byte-for-byte
+identical by a content hash. See the module doc: [13-gridfs](./modules/13-gridfs.md).
+[`src/examples/gridfs.ts`](../src/examples/gridfs.ts) streams a fixed payload into a
+GridFS bucket on a dedicated `files` bucket name, streams it back reassembled from
+its chunks, and compares a sha256 digest of the download against a pinned expected
+hash, run with `npm run ex:gridfs`. The round trip is gated on the content hash, not
+a length, because a length check would pass a same-length corruption while a digest
+catches a truncated or reordered stream. `EXPECTED_SHA256` is pinned as a literal so
+the unit tier catches payload drift with the database down.
+
+GridFS derives `files.files` and `files.chunks` from the single bucket name in
+`COLLECTIONS`, so the bucket name is not itself a collection. The stream lifecycle is
+wrapped in a Promise that rejects on `error` and resolves on `finish` or `end`, the
+async/await bridge for event-based Node streams, and upload resolves before download
+so there is no read-before-write race. The integration tier uploads a 700 KiB payload
+spanning multiple 255 KiB chunks to exercise reassembly, where a dropped or reordered
+chunk would change the hash. The round trip needs live Mongo, so the behavioural tests
+are integration tier only, with the hash and corruption assertions in the unit tier.
+
+<!-- /13 -->

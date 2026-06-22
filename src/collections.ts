@@ -48,6 +48,11 @@ export const COLLECTIONS = {
   // each run, which for a time series collection means dropping and recreating with
   // the timeseries options since the option cannot be added to an existing one.
   readings: 'readings',
+  // GridFSBucket name for the GridFS example. GridFS derives two collections from
+  // it, files.files and files.chunks, so this one constant names the whole bucket
+  // rather than either backing collection. The module owns it and drops it each
+  // run so re-uploading the same filename stays idempotent.
+  files: 'files',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
