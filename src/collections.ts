@@ -27,6 +27,10 @@ export const COLLECTIONS = {
   // rather than the seeded posts, whose faker text is random, so the tests can
   // name exactly which documents contain a term and in what relevance order.
   articles: 'articles',
+  // Scratch space for the geospatial example. Holds fixed landmarks at known
+  // coordinates rather than the faker-seeded places, whose points are random, so
+  // the tests can assert exact nearest-first ordering and inside/outside inclusion.
+  landmarks: 'landmarks',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -107,6 +111,14 @@ export interface Customer {
 export interface Article {
   title: string;
   body: string;
+}
+
+// The scratch document shape for the geospatial example. location is a GeoJSON
+// Point the 2dsphere index covers, and the fixed landmarks sit at known
+// coordinates so nearest-first ordering and inside/outside inclusion are exact.
+export interface Landmark {
+  name: string;
+  location: GeoPoint;
 }
 
 // The validated document shape for the schema validation example. The $jsonSchema

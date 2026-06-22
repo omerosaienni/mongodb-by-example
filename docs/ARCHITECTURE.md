@@ -206,3 +206,31 @@ so the module is integration tier only, with the pure `isDescending` predicate
 covered in the unit tier.
 
 <!-- /8 -->
+
+<!-- 9 -->
+
+## Geospatial
+
+A 2dsphere index with a near and a within query. See the module doc:
+[9-geospatial](./modules/9-geospatial.md).
+[`src/examples/geo.ts`](../src/examples/geo.ts) builds a named 2dsphere index over
+`location` on a dedicated `landmarks` scratch collection, then runs a `$geoNear`
+aggregation that returns the landmarks nearest first with the computed distance and
+a `$geoWithin` + `$centerSphere` query that returns only the points inside a circle,
+run with `npm run ex:geo`. `$geoNear` is used over `find()` + `$near` because its
+`distanceField` surfaces the spherical distance, so the test asserts ordering by an
+increasing value rather than just document order. It must be the first pipeline
+stage and the index is built in `resetAndSeed` before any query runs, since
+`$geoNear` errors without it.
+
+The corpus is five hand-authored London landmarks rather than the faker-seeded
+`places`, because random points cannot give a provable nearest-first order or a
+known inside or outside split. They sit at strictly increasing distances from a
+fixed origin and Greenwich falls outside the radius, so the within query has a point
+it must exclude. Coordinates are `[longitude, latitude]`, longitude first, chosen so
+a swap moves every point and is caught by the tests, and the `$centerSphere` radius
+is pre-converted to radians as Mongo expects. The near and within queries need live
+Mongo, so the module is integration tier only, with the pure `haversineMetres` and
+`isAscending` predicates covered in the unit tier.
+
+<!-- /9 -->

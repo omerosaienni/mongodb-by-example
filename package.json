@@ -8,6 +8,7 @@
     "seed": "tsx src/seed.ts",
     "ex:aggregation": "tsx src/examples/aggregation.ts",
     "ex:crud": "tsx src/examples/crud.ts",
+    "ex:geo": "tsx src/examples/geo.ts",
     "ex:indexes": "tsx src/examples/indexes.ts",
     "ex:text": "tsx src/examples/text.ts",
     "ex:validation": "tsx src/examples/validation.ts",
