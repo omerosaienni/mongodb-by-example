@@ -389,3 +389,27 @@ so the unit tier proves the recorded-grant extraction with the database down, wh
 the commands need live Mongo so the behavioural tests are integration tier only.
 
 <!-- /15 -->
+
+<!-- 16 -->
+
+## SSE server
+
+A Node http server holding one change stream and streaming each change to every
+connected client over Server-Sent Events. See the module doc:
+[16-sse](./modules/16-sse.md).
+[`src/examples/sse.ts`](../src/examples/sse.ts) opens and establishes a single
+`watch()` on its own `sseEvents` scratch collection, fans every event out to a
+`Set` of open responses, and serves the stream at `/events`, run with
+`npm run ex:sse`. One shared client and one stream serve the whole server lifetime,
+not one per request, mirroring the dashboard-server rule, and the stream is
+established with `tryNext()` before the server listens so a client that connects
+then writes does not race the lazy cursor and miss its own event.
+
+The server owns a dedicated `sseEvents` collection, separate from the
+change-streams `events` collection, so the two modules' integration tests never
+drop or watch the same collection concurrently under the parallel vitest file
+runner. The streaming path needs a live replica set, so it is integration tier
+only, with the pure `formatSseFrame` and `parseSseData` framing helpers in the unit
+tier.
+
+<!-- /16 -->

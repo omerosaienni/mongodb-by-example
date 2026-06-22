@@ -58,6 +58,11 @@ export const COLLECTIONS = {
   // matched by _id, never another deliverable's write. Recreated each run so a
   // re-run starts from a known counter value.
   counters: 'counters',
+  // The SSE server's own watched collection, kept separate from events so the SSE
+  // server and the change-streams example never drop or watch the same collection
+  // concurrently under the parallel integration runner, which would invalidate
+  // each other's open change streams.
+  sseEvents: 'sseEvents',
 } as const;
 
 // A dedicated database for the RBAC example, kept out of COLLECTIONS because that
