@@ -413,3 +413,28 @@ only, with the pure `formatSseFrame` and `parseSseData` framing helpers in the u
 tier.
 
 <!-- /16 -->
+
+<!-- 17 -->
+
+## React dashboard
+
+A Vite React app consuming the SSE endpoint with EventSource and rendering a
+live-updating table of change events. See the module doc:
+[17-dashboard](./modules/17-dashboard.md). It is a self-contained sub-app under
+[`dashboard/`](../dashboard) with its own DOM and JSX tsconfig, isolated from the
+Node-only `src/` tree so the existing `npx tsc --noEmit` and the `src/` test tiers
+stay untouched. Run `npm run dashboard:dev` against a running `npm run ex:sse`; the
+dev server proxies `/events` to the deliverable 16 server on port 3000.
+
+The deliverable gate is the pure data layer
+[`dashboard/src/sseRows.ts`](../dashboard/src/sseRows.ts), which turns a raw
+`data: {...}\n\n` frame into a table row and is unit tested against the deliverable
+16 wire format, skipping the `: connected` comment frame. The EventSource wrapper
+[`dashboard/src/sseClient.ts`](../dashboard/src/sseClient.ts) takes an injectable
+factory and timer so the reconnect-on-drop behaviour is tested with a fake
+connection, reconnecting only once the source is CLOSED and deferring the reopen
+through a timer to avoid a tight loop. The dashboard's pure tests are folded into the
+unit tier through a vitest projects config, so one `agent-tests.sh unit` run covers
+both the `src/` Node tests and the dashboard jsdom tests.
+
+<!-- /17 -->
