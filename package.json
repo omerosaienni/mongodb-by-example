@@ -13,6 +13,7 @@
     "ex:gridfs": "tsx src/examples/gridfs.ts",
     "ex:indexes": "tsx src/examples/indexes.ts",
     "ex:oplog": "tsx src/examples/oplog.ts",
+    "ex:rbac": "tsx src/examples/rbac.ts",
     "ex:text": "tsx src/examples/text.ts",
     "ex:timeseries": "tsx src/examples/timeseries.ts",
     "ex:transactions": "tsx src/examples/transactions.ts",

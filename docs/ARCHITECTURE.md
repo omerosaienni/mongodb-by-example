@@ -363,3 +363,29 @@ proves the idempotency check with no database and the integration tier reuses th
 same definitions against a live oplog.
 
 <!-- /14 -->
+
+<!-- 15 -->
+
+## RBAC
+
+An illustrative tour of the role-based access control model on a scratch database,
+honest that open localhost auth records grants but does not enforce them. See the
+module doc: [15-rbac](./modules/15-rbac.md).
+[`src/examples/rbac.ts`](../src/examples/rbac.ts) creates a user with a single
+built-in `readWrite` role on a dedicated `rbac_scratch` database, reads the grant
+back via `usersInfo`, and reads `connectionStatus` on the open connection, run with
+`npm run ex:rbac`. A dedicated scratch database is used over the harness `mongodb1`
+db so the user and grants never pollute the seeded collections other deliverables
+assert on, and `RBAC_DB` is named in `collections.ts` but kept outside the
+`COLLECTIONS` map because that map holds collection names, this is a db name.
+
+Auth is open on localhost, so the grant is recorded not enforced: `createUser`
+writes it to `system.users` and `usersInfo` reads it back, but no auth handshake
+happens, so `connectionStatus` reports an empty `authenticatedUserRoles` on the
+unauthenticated open connection. The module prints that caveat and the integration
+test asserts the recorded grant and the honest empty value rather than a blocked
+action or a faked session. The pure `rolesOf` and `hasRole` helpers are factored out
+so the unit tier proves the recorded-grant extraction with the database down, while
+the commands need live Mongo so the behavioural tests are integration tier only.
+
+<!-- /15 -->
