@@ -438,3 +438,24 @@ unit tier through a vitest projects config, so one `agent-tests.sh unit` run cov
 both the `src/` Node tests and the dashboard jsdom tests.
 
 <!-- /17 -->
+
+<!-- 18 -->
+
+## README finalisation
+
+The full README that takes a new reader from a clean clone to every example running,
+with a doc-check that keeps its quoted commands from drifting. See the module doc:
+[18-readme](./modules/18-readme.md). [`README.md`](../README.md) documents the Make,
+npm and faker split, the single node replica set and the `directConnection=true`
+reason, the open auth posture, the vector search exclusion, and a feature index of
+every example module and its npm script.
+
+The gate is [`src/readme.integration.test.ts`](../src/readme.integration.test.ts),
+which parses the README's own "Verified command set" block and runs each quoted
+command, failing on the first non-zero exit, so the README cannot drift from the real
+commands. Only self-terminating, non-destructive commands are in that block; the
+bootstrap, the servers and the destructive make targets are documented in prose so
+the doc-check, which itself runs in the integration tier, never tears down or hangs
+the shared database. This is the terminal deliverable.
+
+<!-- /18 -->
