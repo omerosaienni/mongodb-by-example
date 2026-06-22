@@ -12,10 +12,6 @@ import {
   activeScoresViaPartialIndex,
 } from './indexes.js';
 
-// Fixed base date so the seeded documents and their expireAt are identical every
-// run, keeping every assertion deterministic.
-const BASE = new Date('2026-01-01T00:00:00.000Z');
-
 async function metrics(): Promise<Collection<Metric>> {
   const db = await getDb();
   return db.collection<Metric>(COLLECTIONS.metrics);
@@ -24,7 +20,7 @@ async function metrics(): Promise<Collection<Metric>> {
 // Build the known state once: the index assertions are read-only so they share
 // one seeded, indexed collection rather than rebuilding per test.
 beforeAll(async () => {
-  await resetAndSeed(BASE);
+  await resetAndSeed();
 });
 
 afterAll(async () => {

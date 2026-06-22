@@ -10,10 +10,12 @@ export const INDEX_NAMES = {
   ttl: 'expireAt_ttl',
 } as const;
 
-// TTL window. Documents whose expireAt is older than this are eligible for the
-// background TTL monitor to remove. The value is illustrative; the examples and
-// tests assert the index exists with this option, not that a delete has fired,
-// because the monitor only runs about once a minute.
+// TTL window. Documents whose expireAt is older than now minus this are eligible
+// for the background TTL monitor to remove. The value is illustrative; the
+// examples and tests assert the index exists with this option, not that a delete
+// has fired. The monitor wakes about once a minute but can sweep at any point in
+// that window, so the seeded docs are dated into the future (see sampleMetrics)
+// rather than relying on the monitor not firing during a test run.
 export const TTL_SECONDS = 3600;
 
 async function metrics(): Promise<Collection<Metric>> {
@@ -104,32 +106,41 @@ export async function activeScoresViaPartialIndex(): Promise<number[]> {
   return docs.map((d) => d.score);
 }
 
+// Margin past now() for expireAt: TTL_SECONDS plus a day, so a doc stays well
+// inside the live window for any plausible run length.
+const TTL_FUTURE_MS = (TTL_SECONDS + 86400) * 1000;
+
 // Deterministic documents the demo and tests share, so assertions can name exact
-// expected values. expireAt is computed from a fixed base date passed in rather
-// than now(), keeping the data stable across runs.
-export function sampleMetrics(base: Date): Metric[] {
+// expected scores. expireAt is dated into the future of now(), NOT a fixed past
+// base: TTL eligibility is judged against wall-clock now (expireAt < now minus
+// expireAfterSeconds), so a past-dated expireAt makes every doc reap-eligible and
+// Mongo's background monitor empties the collection mid-run (reproduced: gone in
+// ~45s), flaking the partial-index read to []. A now-relative future expireAt
+// keeps the docs alive for the whole run while still exercising the TTL index the
+// tests assert on. No assertion reads the expireAt value, only that the index
+// exists with expireAfterSeconds, so anchoring it to now() costs no determinism.
+export function sampleMetrics(): Metric[] {
+  const expireAt = new Date(Date.now() + TTL_FUTURE_MS);
   return [
-    { category: 'cpu', score: 90, active: true, expireAt: new Date(base.getTime()) },
-    { category: 'cpu', score: 70, active: true, expireAt: new Date(base.getTime()) },
-    { category: 'cpu', score: 50, active: false, expireAt: new Date(base.getTime()) },
-    { category: 'mem', score: 80, active: true, expireAt: new Date(base.getTime()) },
-    { category: 'mem', score: 30, active: false, expireAt: new Date(base.getTime()) },
+    { category: 'cpu', score: 90, active: true, expireAt: new Date(expireAt.getTime()) },
+    { category: 'cpu', score: 70, active: true, expireAt: new Date(expireAt.getTime()) },
+    { category: 'cpu', score: 50, active: false, expireAt: new Date(expireAt.getTime()) },
+    { category: 'mem', score: 80, active: true, expireAt: new Date(expireAt.getTime()) },
+    { category: 'mem', score: 30, active: false, expireAt: new Date(expireAt.getTime()) },
   ];
 }
 
-// Drop and repopulate the scratch collection from a fixed base date, then build
-// the indexes. Exported so the test can establish the same known state.
-export async function resetAndSeed(base: Date): Promise<void> {
+// Drop and repopulate the scratch collection, then build the indexes. Exported so
+// the test can establish the same known state.
+export async function resetAndSeed(): Promise<void> {
   const col = await metrics();
   await col.drop().catch(() => false);
-  await col.insertMany(sampleMetrics(base));
+  await col.insertMany(sampleMetrics());
   await createIndexes();
 }
 
 async function demo(): Promise<void> {
-  // A fixed base date keeps the printed state reproducible run to run.
-  const base = new Date('2026-01-01T00:00:00.000Z');
-  await resetAndSeed(base);
+  await resetAndSeed();
 
   const col = await metrics();
   const built = await col.listIndexes().toArray();
