@@ -337,3 +337,29 @@ chunk would change the hash. The round trip needs live Mongo, so the behavioural
 are integration tier only, with the hash and corruption assertions in the unit tier.
 
 <!-- /13 -->
+
+<!-- 14 -->
+
+## Oplog peek
+
+A relative `$inc` update read back from the replication oplog to show it is
+logged as a concrete absolute value, not the relative instruction. See the module
+doc: [14-oplog](./modules/14-oplog.md).
+[`src/examples/oplog.ts`](../src/examples/oplog.ts) seeds a single counter on a
+dedicated `counters` scratch collection, sends a relative `$inc` to the server,
+then reads the newest matching `local.oplog.rs` entry and shows its `$v:2` delta
+holds the resulting total under `diff.u`, run with `npm run ex:oplog`. The oplog
+is read via `getClient().db('local')`, not the harness `getDb()`, because the
+oplog lives in the `local` system database, not `mongodb1`, while staying on the
+one shared client.
+
+The `$v:2` delta carries absolute values by design: replication must be
+replay-safe, so a relative `$inc` is resolved to its result before logging, and
+that is the idempotency property the module makes executable. The exact entry is
+pinned by `op: 'u'`, the fully-qualified `ns` and `o2._id`, sorted
+`$natural: -1` so a re-run cannot be mistaken for this one. Two pure predicates,
+`deltaContainsInc` and `extractUpdatedValue`, are factored out so the unit tier
+proves the idempotency check with no database and the integration tier reuses the
+same definitions against a live oplog.
+
+<!-- /14 -->

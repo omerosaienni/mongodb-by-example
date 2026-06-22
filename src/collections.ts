@@ -53,6 +53,11 @@ export const COLLECTIONS = {
   // rather than either backing collection. The module owns it and drops it each
   // run so re-uploading the same filename stays idempotent.
   files: 'files',
+  // Scratch space for the oplog-peek example. The module inserts one counter
+  // document then $inc's it, so the exact oplog entry it reads back is its own and
+  // matched by _id, never another deliverable's write. Recreated each run so a
+  // re-run starts from a known counter value.
+  counters: 'counters',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -161,6 +166,15 @@ export interface Account {
 export interface EventDoc {
   key: string;
   label: string;
+}
+
+// The scratch document shape for the oplog-peek example. name is the natural key
+// the module targets and counter is the field the $inc mutates. The known start
+// value lets the oplog test assert the logged entry carries the resulting
+// absolute value (start + increment), not the relative instruction.
+export interface Counter {
+  name: string;
+  counter: number;
 }
 
 // The validated document shape for the schema validation example. The $jsonSchema
