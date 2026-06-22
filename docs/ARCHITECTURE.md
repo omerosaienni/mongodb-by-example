@@ -234,3 +234,28 @@ Mongo, so the module is integration tier only, with the pure `haversineMetres` a
 `isAscending` predicates covered in the unit tier.
 
 <!-- /9 -->
+
+<!-- 10 -->
+
+## Transactions
+
+A multi-document transaction demonstrating commit and abort with a conserved total.
+See the module doc: [10-transactions](./modules/10-transactions.md).
+[`src/examples/transactions.ts`](../src/examples/transactions.ts) seeds two fixed
+accounts on a dedicated `accounts` scratch collection, then transfers between them
+with a guarded debit and a credit inside one `client.withSession` +
+`session.withTransaction`, both writes passing `{ session }`, run with
+`npm run ex:transactions`. The driver-owned `withSession` and `withTransaction` are
+used over a manual `startSession` / `commitTransaction`, so the driver owns the
+commit, the retry of transient errors and the session lifecycle, and a thrown error
+inside the callback aborts cleanly with nothing to leak.
+
+The transfer either commits both writes or aborts both: a forced mid-transaction
+`ForcedAbort` rolls the staged debit back, and an overdraw matches no document under
+the `balance >= amount` debit guard so it aborts before the credit lands. The sum of
+all balances is the conserved invariant the tests assert across both outcomes. The
+collection comes from the named `getDb()` handle, not `client.db()`, since the URI
+declares no default database. The transfer needs live Mongo, so the behavioural
+tests are integration tier only, with the seed-shape assertions in the unit tier.
+
+<!-- /10 -->

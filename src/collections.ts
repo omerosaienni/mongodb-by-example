@@ -31,6 +31,11 @@ export const COLLECTIONS = {
   // coordinates rather than the faker-seeded places, whose points are random, so
   // the tests can assert exact nearest-first ordering and inside/outside inclusion.
   landmarks: 'landmarks',
+  // Scratch space for the transactions example. Holds two accounts with fixed
+  // starting balances, so the commit and abort tests assert concrete balances and
+  // a conserved total a wrong implementation would not produce. Owned by the
+  // module, which recreates it each run.
+  accounts: 'accounts',
 } as const;
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.
@@ -119,6 +124,16 @@ export interface Article {
 export interface Landmark {
   name: string;
   location: GeoPoint;
+}
+
+// The scratch document shape for the transactions example. accountId is the
+// natural key the transfer filters on and balance is the field the debit and
+// credit updates mutate inside a session. balance is a plain number serialised as
+// BSON double, fine here because the conserved-total assertion compares exact
+// integer-valued balances.
+export interface Account {
+  accountId: string;
+  balance: number;
 }
 
 // The validated document shape for the schema validation example. The $jsonSchema
