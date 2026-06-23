@@ -1,7 +1,7 @@
 # help is the default goal so a bare `make` documents the harness
 .DEFAULT_GOAL := help
 
-.PHONY: help up seed down drop test test-unit test-integration graph graph-viz
+.PHONY: help up seed down drop traffic test test-unit test-integration graph graph-viz
 
 help: ## List available targets
 	@echo "mongodb-by-example - available targets:"
@@ -11,6 +11,7 @@ help: ## List available targets
 	@echo "  seed        Generate and load faker seed data"
 	@echo "  down        Stop the shared container, keep data"
 	@echo "  drop        Drop this project's database (mongodb-by-example) only"
+	@echo "  traffic     Drive live change events into sseEvents for the dashboard (Ctrl-C to stop)"
 	@echo "  test-unit   Run the unit tier (no database needed)"
 	@echo "  test-integration  Run the integration tier (needs Mongo up)"
 	@echo "  test        Run unit then integration, in that order"
@@ -37,6 +38,13 @@ up: ## Start the shared mongod (idempotent) and ensure the replica set
 
 seed: ## Generate and load faker seed data
 	npm run seed
+
+# Drives a continuous stream of inserts, updates and deletes into sseEvents so the
+# dashboard has live data to render. Run the SSE server (npm run ex:sse) and the
+# dashboard (npm run dashboard:dev) alongside this; needs Mongo up. Runs in the
+# foreground and stops on Ctrl-C, which the driver handles to close the client.
+traffic: ## Drive live change events into sseEvents for the dashboard (Ctrl-C to stop)
+	npm run traffic
 
 # stops the shared mongod for every project, not just this one: the blast radius
 # is the whole shared server, so this is not a per-project teardown

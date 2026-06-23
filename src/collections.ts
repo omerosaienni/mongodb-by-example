@@ -63,6 +63,12 @@ export const COLLECTIONS = {
   // concurrently under the parallel integration runner, which would invalidate
   // each other's open change streams.
   sseEvents: 'sseEvents',
+  // Scratch space for the traffic driver's integration test. The driver writes to
+  // sseEvents in production (the collection the SSE server and dashboard watch),
+  // but its test drops and watches this separate collection so it never collides
+  // with the SSE server's own integration test on sseEvents under the parallel
+  // runner, the same separation reason as events versus sseEvents above.
+  sseTraffic: 'sseTraffic',
 } as const;
 
 // A dedicated database for the RBAC example, kept out of COLLECTIONS because that

@@ -152,6 +152,19 @@
       "presentation": { "group": "2: servers", "order": 1 }
     },
     {
+      "name": "traffic: drive sseEvents (long-running)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/traffic-driver/sse-traffic.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      // Loops writes until SIGINT like the SSE server, so it sits in the servers
+      // group. Run it alongside "ex: sse" and the dashboard to see live updates.
+      "presentation": { "group": "2: servers", "order": 2 }
+    },
+    {
       "name": "seed (faker load)",
       "type": "node",
       "request": "launch",
@@ -160,7 +173,7 @@
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"],
-      "presentation": { "group": "2: servers", "order": 2 }
+      "presentation": { "group": "2: servers", "order": 3 }
     },
 
     {

@@ -13,7 +13,9 @@ export default defineConfig({
       {
         test: {
           name: 'src',
-          include: ['src/**/*.test.ts'],
+          // traffic-driver/ is Node-only like src/, so its unit tests run in the
+          // same project rather than the jsdom dashboard one.
+          include: ['src/**/*.test.ts', 'traffic-driver/**/*.test.ts'],
           exclude: ['**/*.integration.test.ts', '**/node_modules/**'],
           environment: 'node',
         },
