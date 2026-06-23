@@ -459,3 +459,16 @@ the doc-check, which itself runs in the integration tier, never tears down or ha
 the shared database. This is the terminal deliverable.
 
 <!-- /18 -->
+
+<!-- D1 -->
+
+## CI and PR checks (D1)
+
+A GitHub Actions workflow gates every pull request that targets `main`. It runs
+five parallel jobs that reproduce the local quality gates: lint, format, typecheck
+and the unit tier run database-free, while the integration job stands up the single
+node replica set by reusing `make up` then runs seed and the integration tier. A
+unit-tier structural test holds the workflow to its contract so the gates cannot
+silently drift. See [docs/modules/D1-ci-workflow.md](./modules/D1-ci-workflow.md).
+
+<!-- /D1 -->

@@ -20,6 +20,7 @@
     "ex:transactions": "tsx src/examples/transactions.ts",
     "ex:validation": "tsx src/examples/validation.ts",
     "lint": "eslint src",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:unit": "vitest run -c vitest.unit.config.ts",
     "test:integration": "vitest run -c vitest.integration.config.ts",
     "dashboard:typecheck": "tsc --noEmit -p dashboard/tsconfig.json",
@@ -51,6 +52,7 @@
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.1",
     "vite": "^6.0.7",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.9",
+    "yaml": "^2.9.0"
   }
 }
