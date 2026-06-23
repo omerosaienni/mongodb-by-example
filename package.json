@@ -4,6 +4,7 @@
   "description": "A local MongoDB learning harness using the native TypeScript driver",
   "type": "module",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "seed": "tsx src/seed.ts",
     "ex:aggregation": "tsx src/examples/aggregation.ts",

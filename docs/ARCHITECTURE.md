@@ -6,8 +6,7 @@ How the Mongo playground is wired together. Per-deliverable detail lives under
 ## Dependency graph
 
 The deliverable build order, derived from the `depends_on` field of each
-deliverable in [docs/deliverables.md](./deliverables.md). Roots with no
-dependencies are one colour, dependents another.
+deliverable. Roots with no dependencies are one colour, dependents another.
 
 <!-- depgraph -->
 

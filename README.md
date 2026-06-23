@@ -1,10 +1,35 @@
 # Mongo playground
 
-A local MongoDB learning harness. It demonstrates the range of community Mongo
-features through small, independently runnable example modules. The native
-TypeScript driver throughout, Mongo running in Docker as a single node replica
-set, Make orchestrating infra and npm running the examples and tests. Built for
-learning, so a clear example beats production hardening.
+A local MongoDB learning harness that doubles as a worked example of an
+agent-driven build workflow. It serves two purposes:
+
+1. **Show how to interact with MongoDB.** The range of community Mongo features,
+   each a small independently runnable example module. The native TypeScript
+   driver throughout, Mongo running in Docker as a single node replica set, Make
+   orchestrating infra and npm running the examples and tests. Built for learning,
+   so a clear example beats production hardening.
+2. **Exercise and showcase the [agent-sdlc](https://github.com/omerosaienni/agent-sdlc)
+   workflow.** This whole repository was built by that workflow, one deliverable at
+   a time, so it stands as a concrete example of the workflow producing a real
+   project end to end. See [Built by agent-sdlc](#built-by-agent-sdlc) below.
+
+## Built by agent-sdlc
+
+Every feature here was delivered through the
+[agent-sdlc](https://github.com/omerosaienni/agent-sdlc) build-judge loop, not
+hand-written in one sitting. A design is cut into small independently verifiable
+deliverables, then each runs through a multi-agent pipeline that builds it,
+reviews it for conventions and scope, judges its behaviour by running the tests
+itself, documents it, and opens a pull request. The repository is therefore both
+the MongoDB reference and the artefact the workflow produced.
+
+The trail is visible in the repo:
+
+- `docs/ARCHITECTURE.md` plus `docs/modules/` are generated per deliverable.
+- The pull request history is one PR per deliverable, the audit record of each
+  increment.
+- `.github/workflows/ci.yml` runs lint, format, typecheck and both test tiers on
+  every PR to `main`, the same gates the loop runs locally before it commits.
 
 ## How the pieces split
 
@@ -23,7 +48,7 @@ Three tools, each with one job.
 
 - **Single node replica set.** Mongo runs as a one member replica set, not a
   standalone, because the change streams, transactions and oplog examples all need
-  a replica set. `make bootstrap` brings the container up and initialises the set.
+  a replica set. `make up` brings the container up and initialises the set.
 - **directConnection=true.** The connection URI sets `directConnection=true`. A
   single node replica set advertises its internal container hostname, which the
   host cannot resolve, so without direct connection the driver's topology discovery
@@ -43,11 +68,12 @@ From a clean clone, in order. These bring up the database and load the seed.
 
 ```sh
 npm install        # install dependencies
-make bootstrap     # start Mongo in Docker and initialise the replica set
+make up            # start Mongo in Docker and initialise the replica set
 npm run seed       # generate and load the faker seed data
 ```
 
-`make bootstrap` is `up` then `rs-init`. It is left out of the auto-verified block
+`make up` brings the container up, polls mongod for readiness, then initialises the
+single node replica set, all idempotent. It is left out of the auto-verified block
 below because the doc-check assumes Mongo is already running. Once Mongo is up and
 seeded, every example, the test tiers and the dashboard are available.
 
@@ -85,8 +111,8 @@ start a server that never exits.
 ## Feature index
 
 Each feature is one module under `src/examples/`, runnable on its own and printing
-its results. The deliverable number ties it back to `docs/deliverables.md` and the
-per-module write-up under `docs/modules/`.
+its results. The deliverable number ties it back to the per-module write-up under
+`docs/modules/`.
 
 | Feature                   | npm script                  | Module                           | Deliverable |
 | ------------------------- | --------------------------- | -------------------------------- | ----------- |
@@ -138,19 +164,19 @@ first non-zero exit, which is what keeps the documented commands honest.
 
 ```text
 make help              # list targets
-make up                # start MongoDB in Docker
-make rs-init           # initialise the single node replica set (idempotent)
+make up                # start mongod and ensure the replica set (idempotent)
 make seed              # generate and load the faker seed data
-make bootstrap         # up + rs-init in one go
-make down              # stop the container, keep the data
-make nuke              # stop the container and delete the named volume
+make down              # stop the shared container, keep the data
+make drop              # drop this project's database only
 make test-unit         # run the unit tier
 make test-integration  # run the integration tier
 make test              # unit then integration
+make graph             # rebuild the knowledge graph (code, docs, HTML)
+make graph-viz         # regenerate the graph view from the existing graph
 ```
 
-`make down` and `make nuke` stop or destroy the database, so they are documented
-here but never run by the doc-check.
+`make down` and `make drop` stop the shared container or drop this project's
+database, so they are documented here but never run by the doc-check.
 
 ## Layout
 
@@ -159,5 +185,11 @@ here but never run by the doc-check.
 - `src/examples/` one runnable module per feature, co-located with its tests.
 - `dashboard/` the Vite React dashboard.
 - `scripts/` infra scripts driven by the Makefile.
-- `docs/` the deliverable sheet, the cross-cutting `docs/ARCHITECTURE.md`, and a
-  per-module write-up under `docs/modules/`.
+- `docs/` the cross-cutting `docs/ARCHITECTURE.md` and a per-module write-up
+  under `docs/modules/`.
+- `.vscode/launch.json` debug configs, one per example plus the seed, servers,
+  dashboard and test tiers.
+
+## Licence
+
+Released under the [MIT licence](LICENSE).

@@ -1,0 +1,233 @@
+{
+  // Debug configs for the mongo-db-1 harness. Examples run under tsx (the same
+  // runtime the ex:* npm scripts use) so breakpoints hit the TypeScript source
+  // directly with no separate build step. Configs are grouped in the Run and
+  // Debug dropdown via presentation.group; the numeric prefix orders the groups.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ex: aggregation",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/aggregation.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 1 }
+    },
+    {
+      "name": "ex: change-streams",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/change-streams.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 2 }
+    },
+    {
+      "name": "ex: crud",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/crud.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 3 }
+    },
+    {
+      "name": "ex: geo",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/geo.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 4 }
+    },
+    {
+      "name": "ex: gridfs",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/gridfs.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 5 }
+    },
+    {
+      "name": "ex: indexes",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/indexes.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 6 }
+    },
+    {
+      "name": "ex: oplog",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/oplog.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 7 }
+    },
+    {
+      "name": "ex: rbac",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/rbac.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 8 }
+    },
+    {
+      "name": "ex: text",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/text.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 9 }
+    },
+    {
+      "name": "ex: timeseries",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/timeseries.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 10 }
+    },
+    {
+      "name": "ex: transactions",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/transactions.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 11 }
+    },
+    {
+      "name": "ex: validation",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/validation.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "1: examples", "order": 12 }
+    },
+
+    {
+      "name": "ex: sse (server, long-running)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/examples/sse.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      // sse.ts stays up until SIGINT (it holds a change stream), so it lives in
+      // its own group apart from the one-shot examples above.
+      "presentation": { "group": "2: servers", "order": 1 }
+    },
+    {
+      "name": "seed (faker load)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${workspaceFolder}/src/seed.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "2: servers", "order": 2 }
+    },
+
+    {
+      "name": "dashboard: vite dev server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/vite",
+      "args": ["-c", "${workspaceFolder}/dashboard/vite.config.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "3: dashboard", "order": 1 }
+    },
+    {
+      "name": "dashboard: open Chrome",
+      "type": "chrome",
+      "request": "launch",
+      // Vite's default dev port. Launch the dev server config first (or use the
+      // compound below), then this attaches breakpoints in the React source.
+      "url": "http://127.0.0.1:5173",
+      "webRoot": "${workspaceFolder}/dashboard",
+      "presentation": { "group": "3: dashboard", "order": 2 }
+    },
+
+    {
+      "name": "tests: unit tier",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "-c", "${workspaceFolder}/vitest.unit.config.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "4: tests", "order": 1 }
+    },
+    {
+      "name": "tests: integration tier (needs Mongo up)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "-c", "${workspaceFolder}/vitest.integration.config.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "4: tests", "order": 2 }
+    },
+    {
+      "name": "tests: current file",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      // Integration config covers every test glob, so it runs whichever spec is
+      // open. Unit-only specs still pass under it; they just need no database.
+      "args": ["run", "-c", "${workspaceFolder}/vitest.integration.config.ts", "${relativeFile}"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": { "group": "4: tests", "order": 3 }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "dashboard: dev server + Chrome",
+      // SSE data needs the deliverable 16 server on :3000 too; start that with
+      // the "ex: sse" config separately if you want live /events in the browser.
+      "configurations": ["dashboard: vite dev server", "dashboard: open Chrome"],
+      "presentation": { "group": "3: dashboard", "order": 3 }
+    }
+  ]
+}

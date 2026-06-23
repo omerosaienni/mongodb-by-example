@@ -5,4 +5,6 @@ dist/
 coverage/
 .building/
 graphify-out/
-.vscode/
+# ignore personal editor settings but share the curated debug map
+.vscode/*
+!.vscode/launch.json
