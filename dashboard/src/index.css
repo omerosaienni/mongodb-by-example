@@ -1,0 +1,195 @@
+/* The dashboard's only stylesheet. Plain CSS with design tokens, imported once in
+   main.tsx. No styling dependency on purpose: the app is deliberately minimal and
+   a token sheet keeps the palette in one place without a build-config step. */
+
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --border: #eceef3;
+  --text: #2a2f3a;
+  --muted: #7a8194;
+  --accent: #8a92e3;
+
+  /* Operation colours. Each is a pastel fill plus a darker readable text tone, so
+     the pill carries meaning at a glance and the new-row flash reuses the fill. */
+  --insert-fill: #d7f5e3;
+  --insert-text: #1f7a52;
+  --update-fill: #fdeecd;
+  --update-text: #9a6a12;
+  --delete-fill: #fbdcdf;
+  --delete-text: #a23645;
+
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(20, 24, 40, 0.04), 0 8px 24px rgba(20, 24, 40, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.shell {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+/* The event count as a soft rounded badge beside the title rather than bare text. */
+.count {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, white);
+  color: color-mix(in srgb, var(--accent) 60%, black);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* The friendly waiting state before the first change lands. */
+.empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead th {
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 60%, white);
+}
+
+tbody td {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover td {
+  background: color-mix(in srgb, var(--bg) 50%, white);
+}
+
+/* The key column reads as data, so a monospace stack sets it apart. */
+.cell-key {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cell-label {
+  font-weight: 500;
+}
+
+/* The operation pill. The op-<type> modifier supplies the pastel fill and text
+   tone from the tokens above; an unknown op falls back to the neutral base. */
+.op {
+  display: inline-block;
+  min-width: 64px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: lowercase;
+  background: var(--border);
+  color: var(--muted);
+}
+
+.op-insert {
+  background: var(--insert-fill);
+  color: var(--insert-text);
+}
+
+.op-update {
+  background: var(--update-fill);
+  color: var(--update-text);
+}
+
+.op-delete {
+  background: var(--delete-fill);
+  color: var(--delete-text);
+}
+
+/* A newly arrived row fades in from a pale tint of its own operation colour, so
+   the colour does double duty: semantic and the live cue. The tint is set per row
+   via the --enter-fill custom property the component writes from the op type. */
+@keyframes row-enter {
+  from {
+    background: var(--enter-fill);
+    transform: translateY(-4px);
+  }
+  to {
+    background: transparent;
+    transform: translateY(0);
+  }
+}
+
+.row-new {
+  animation: row-enter 600ms ease-out;
+}
+
+/* Respect a user's reduced-motion preference: keep the colour cue, drop the
+   movement and the animation. */
+@media (prefers-reduced-motion: reduce) {
+  .row-new {
+    animation: none;
+  }
+}
