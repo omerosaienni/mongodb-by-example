@@ -53,7 +53,7 @@ narrowing `db.command` results to local interfaces.
   connection. Granting a role does not authenticate the current connection, so the
   honest reported value is `[]`. The integration test asserts that true value rather
   than faking an authenticated session.
-- A dedicated scratch database `rbac_scratch`, not the harness `mongodb1` db, so the
+- A dedicated scratch database `rbac_scratch`, not the harness `mongodb-by-example` db, so the
   user and grants never pollute the seeded collections other deliverables assert on.
   Every command runs through `scratch()` = `getClient().db(RBAC_DB)`.
 - Pure `rolesOf` and `hasRole` helpers are factored out of the wrappers, so the unit

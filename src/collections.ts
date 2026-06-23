@@ -68,7 +68,7 @@ export const COLLECTIONS = {
 // A dedicated database for the RBAC example, kept out of COLLECTIONS because that
 // map holds collection names and this is a database name. The example creates a
 // user and grants roles scoped to this db, so it never touches the harness
-// mongodb1 db or the seeded collections other deliverables assert on.
+// mongodb-by-example db or the seeded collections other deliverables assert on.
 export const RBAC_DB = 'rbac_scratch';
 
 // A GeoJSON Point as the driver and Mongo's 2dsphere index expect it.

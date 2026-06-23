@@ -17,7 +17,7 @@ zero.
 
 ### [`src/examples/oplog.ts`](../../src/examples/oplog.ts)
 
-The scratch helpers operate on the `counters` collection in `mongodb1`, typed as
+The scratch helpers operate on the `counters` collection in `mongodb-by-example`, typed as
 `Collection<Counter>`; the oplog read targets `local.oplog.rs`.
 
 - `COUNTER_NAME` (`'visits'`), `START_VALUE` (5), `INCREMENT` (3) — the fixed
@@ -35,7 +35,7 @@ The scratch helpers operate on the `counters` collection in `mongodb1`, typed as
 - `incrementCounter(name, amount): Promise<unknown>` — `$inc` the counter and
   returns the document `_id`, so the caller can match the exact oplog entry.
 - `latestUpdateEntry(id): Promise<OplogEntry | null>` — the newest `op: 'u'`
-  oplog entry for that `_id` in `mongodb1.counters`, sorted `$natural: -1`.
+  oplog entry for that `_id` in `mongodb-by-example.counters`, sorted `$natural: -1`.
 
 ### [`src/collections.ts`](../../src/collections.ts) additions
 
@@ -51,7 +51,7 @@ The scratch helpers operate on the `counters` collection in `mongodb1`, typed as
 
 - The oplog is read via `getClient().db('local').collection('oplog.rs')`, not the
   harness `getDb()` handle, because the oplog lives in the `local` database, a
-  separate db from `mongodb1`. Still the one shared client, so no extra
+  separate db from `mongodb-by-example`. Still the one shared client, so no extra
   connection.
 - The `$v:2` delta carries absolute values by design: replication must be
   replay-safe, so a relative `$inc` is resolved to its result before logging.
@@ -60,7 +60,7 @@ The scratch helpers operate on the `counters` collection in `mongodb1`, typed as
   factored out, so the unit tier proves the idempotency check with no database
   and the integration tier reuses the same definitions, meaning both tiers agree
   on what idempotent form means.
-- The exact entry is matched by `op: 'u'`, `ns: 'mongodb1.counters'` and
+- The exact entry is matched by `op: 'u'`, `ns: 'mongodb-by-example.counters'` and
   `o2._id === id`, sorted `$natural: -1` (newest first), so a re-run or another
   test's write cannot be mistaken for this one.
 
@@ -84,7 +84,7 @@ oldest oplog entry instead of the newest and the integration assertion caught it
 
 - `local.oplog.rs` is a capped, system-owned collection. The module only reads
   it, it never clears or writes it. The scratch `counters` collection in
-  `mongodb1` is what gets reset.
+  `mongodb-by-example` is what gets reset.
 - The delta format is `$v:2` only on mongo 5+; the harness runs mongo 8.0. The
   observed `o` is `{"$v":2,"diff":{"u":{"counter":8}}}` for start 5 plus inc 3.
   A pre-5.0 server would log the raw modifier, so `deltaContainsInc` guards that

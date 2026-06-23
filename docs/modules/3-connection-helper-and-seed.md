@@ -13,7 +13,7 @@ so the example modules and tests have stable input.
 
 ### [`src/db.ts`](../../src/db.ts)
 
-- `DB_NAME: string` — the database name (`mongodb1`) the whole harness uses.
+- `DB_NAME: string` — the database name (`mongodb-by-example`) the whole harness uses.
 - `getClient(): MongoClient` — returns the one shared MongoClient, building it
   lazily on first call and reusing it thereafter. No network until you connect.
 - `getDb(): Promise<Db>` — connects the shared client and returns a typed `Db` on

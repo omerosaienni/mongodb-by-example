@@ -46,7 +46,7 @@ single node replica set, Make for infra, npm for per-feature examples.
 ### Integration endpoints
 
 - Mongo replica set at mongodb://127.0.0.1:27017 with directConnection=true.
-  - This project lives in database mongo-db-1 inside the shared shared-mongo
+  - This project lives in database mongodb-by-example inside the shared shared-mongo
     container, one shared mongod that every project reuses as its own database.
   - Readiness: a connect succeeds, or docker compose ps shows the mongo service up and healthy.
   - Bring-up: make up (creates shared-mongo if absent, then ensures the replica set).

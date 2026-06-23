@@ -4,13 +4,13 @@
 .PHONY: help up seed down drop test test-unit test-integration graph graph-viz
 
 help: ## List available targets
-	@echo "mongo-db-1 - available targets:"
+	@echo "mongodb-by-example - available targets:"
 	@echo ""
 	@echo "  help        Show this list"
 	@echo "  up          Start the shared mongod (idempotent) and ensure the replica set"
 	@echo "  seed        Generate and load faker seed data"
 	@echo "  down        Stop the shared container, keep data"
-	@echo "  drop        Drop this project's database (mongo-db-1) only"
+	@echo "  drop        Drop this project's database (mongodb-by-example) only"
 	@echo "  test-unit   Run the unit tier (no database needed)"
 	@echo "  test-integration  Run the integration tier (needs Mongo up)"
 	@echo "  test        Run unit then integration, in that order"
@@ -45,9 +45,9 @@ down: ## Stop the shared container, keep data
 
 # drops only THIS project's database; the shared server and every other
 # project's database are untouched. in-container mongosh so no host mongosh needed
-drop: ## Drop this project's database (mongo-db-1) only
-	docker compose exec -T mongo mongosh --quiet --eval 'db.getSiblingDB("mongo-db-1").dropDatabase()'
-	@echo "database mongo-db-1 dropped"
+drop: ## Drop this project's database (mongodb-by-example) only
+	docker compose exec -T mongo mongosh --quiet --eval 'db.getSiblingDB("mongodb-by-example").dropDatabase()'
+	@echo "database mongodb-by-example dropped"
 
 test-unit: ## Run the unit tier (no database needed)
 	npm run test:unit

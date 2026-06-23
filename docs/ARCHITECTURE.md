@@ -81,7 +81,7 @@ harness builds on. See the module doc:
 module-level variable and handed out by `getClient()`. Construction is lazy, the
 driver touches no network until `connect()`, so the getter is unit testable for
 reuse with the database down. `getDb()` connects that one client and returns a
-typed `Db` on `DB_NAME` (`mongodb1`); `closeClient()` closes and clears it so a
+typed `Db` on `DB_NAME` (`mongodb-by-example`); `closeClient()` closes and clears it so a
 later `getClient()` rebuilds and the process can exit. Every module imports these,
 none constructs its own client or connects per query. The URI carries
 `directConnection=true` because a single node replica set advertises its internal
@@ -349,7 +349,7 @@ dedicated `counters` scratch collection, sends a relative `$inc` to the server,
 then reads the newest matching `local.oplog.rs` entry and shows its `$v:2` delta
 holds the resulting total under `diff.u`, run with `npm run ex:oplog`. The oplog
 is read via `getClient().db('local')`, not the harness `getDb()`, because the
-oplog lives in the `local` system database, not `mongodb1`, while staying on the
+oplog lives in the `local` system database, not `mongodb-by-example`, while staying on the
 one shared client.
 
 The `$v:2` delta carries absolute values by design: replication must be
@@ -373,7 +373,7 @@ module doc: [15-rbac](./modules/15-rbac.md).
 [`src/examples/rbac.ts`](../src/examples/rbac.ts) creates a user with a single
 built-in `readWrite` role on a dedicated `rbac_scratch` database, reads the grant
 back via `usersInfo`, and reads `connectionStatus` on the open connection, run with
-`npm run ex:rbac`. A dedicated scratch database is used over the harness `mongodb1`
+`npm run ex:rbac`. A dedicated scratch database is used over the harness `mongodb-by-example`
 db so the user and grants never pollute the seeded collections other deliverables
 assert on, and `RBAC_DB` is named in `collections.ts` but kept outside the
 `COLLECTIONS` map because that map holds collection names, this is a db name.

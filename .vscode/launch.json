@@ -1,5 +1,5 @@
 {
-  // Debug configs for the mongo-db-1 harness. Examples run under tsx (the same
+  // Debug configs for the mongodb-by-example harness. Examples run under tsx (the same
   // runtime the ex:* npm scripts use) so breakpoints hit the TypeScript source
   // directly with no separate build step. Configs are grouped in the Run and
   // Debug dropdown via presentation.group; the numeric prefix orders the groups.

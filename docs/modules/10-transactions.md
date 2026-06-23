@@ -66,7 +66,7 @@ All helpers operate on the `accounts` scratch collection, typed as
   unrelated failure that would also abort.
 - Uses the named `getDb()` handle for the collection, not `client.db()`: the
   connection URI declares no default database, so `client.db()` would point at the
-  `test` database, a different one from the harness's `mongodb1`, and the transfer
+  `test` database, a different one from the harness's `mongodb-by-example`, and the transfer
   would read an empty collection.
 
 ## Verified behaviour
@@ -98,7 +98,7 @@ passing vacuously:
   runs outside the transaction and is not rolled back on abort, silently breaking
   atomicity.
 - `client.db()` with no name points at the URI default (`test`), not the harness
-  `mongodb1`. Use the named `getDb()` handle for the collection while opening the
+  `mongodb-by-example`. Use the named `getDb()` handle for the collection while opening the
   session on the same shared client.
 - The transfer needs live Mongo, so the behavioural tests are integration tier
   only, with the seed-shape assertions in the unit tier.

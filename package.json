@@ -1,5 +1,5 @@
 {
-  "name": "mongo-db-1",
+  "name": "mongodb-by-example",
   "version": "0.1.0",
   "description": "A local MongoDB learning harness using the native TypeScript driver",
   "type": "module",
